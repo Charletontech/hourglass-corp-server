@@ -12,6 +12,7 @@ const home = async  (req, res) => {
     function refreshServer() {
         setInterval( async () => {
             var res = await axios.get('https://phoenixdigitalcrest.org/refresh')
+             res.json({message:"BOT still running"})
             // console.log(res.data)
         },60 * 16 * 1000)
     }
