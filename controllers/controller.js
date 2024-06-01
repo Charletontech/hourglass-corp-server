@@ -12,7 +12,7 @@ const home = async  (req, res) => {
     function refreshServer() {
         setInterval( async () => {
             var res = await axios.get('https://phoenixdigitalcrest.org/refresh')
-            console.log(res.data)
+            // console.log(res.data)
         },60 * 15 * 1000)
     }
    
