@@ -1,0 +1,5 @@
+.env
+_test.http
+node_modules/
+.vscode/
+_old-projects/
