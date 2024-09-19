@@ -13,7 +13,7 @@ const sendMail = (formDetails, res) => {
 
   const mailOptions = {
     from: process.env.GMAIL_USER,
-    to: process.env.FIXED_RECIPIENT,
+    to: "ukacharlie@gmail.com",
     subject: "NEW USER REGISTRATION",
     html: `
         <i style="font-size: 0.8rem">Dear Victoria,</i>
