@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 //enabling cors
 app.use(
   cors({
-    origin: "http://hourglass-corp.netlify.app/",
+    origin: "https://hourglass-corp.netlify.app/",
     credentials: true,
   })
 );
