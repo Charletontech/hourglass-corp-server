@@ -6,14 +6,14 @@ const sendMail = (formDetails, res) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "czgxfpqttocpcnce",
-      pass:"hourglassnig@gmail.com",
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
     },
   });
 
   const mailOptions = {
     from: process.env.GMAIL_USER,
-    to: "ukacharlie@gmail.com",
+    to: process.env.FIXED_RECIPIENT,
     subject: "NEW USER REGISTRATION",
     html: `
         <i style="font-size: 0.8rem">Dear Victoria,</i>
@@ -30,7 +30,8 @@ const sendMail = (formDetails, res) => {
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error(error);
-      res.status(501).json({
+      console.log(error);
+      res.status(500).json({
         message:
           "An error occurred (nodemailer), we are unable to register you. Kindly try again. Thank you.",
       });
@@ -42,8 +43,6 @@ const sendMail = (formDetails, res) => {
     }
   });
 };
-
-module.exports = sendMail;
 
 // const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 
@@ -65,3 +64,4 @@ module.exports = sendMail;
 
 // await mailerSend.email.send(emailParams);
 
+module.exports = sendMail;
