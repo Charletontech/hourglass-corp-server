@@ -4,4 +4,8 @@ const signUpHandler = (req, res) => {
   sendMail(req.body, res);
 };
 
-module.exports = { signUpHandler };
+const refreshHandler = (req, res) => {
+  console.log("server has been refreshed!");
+};
+
+module.exports = { signUpHandler, refreshHandler };
