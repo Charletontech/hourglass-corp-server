@@ -1,6 +1,6 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
-const sendMail = (formDetails, res) => {
+const sendMail = (formDetails, res, accountDetails) => {
   const { name, phone, leader, address, lga, sor } = formDetails;
 
   const transporter = nodemailer.createTransport({
@@ -24,21 +24,31 @@ const sendMail = (formDetails, res) => {
         <p>address: ${address}</p>
         <p>Local government: ${lga}</p>
         <p>State of Origin: ${sor}</p>
+        <br>
+        <b>Account Details<b/>
+        <p>Account Number: ${accountDetails.account_number}<p/>
+        <p>Verification Number: ${accountDetails.bvn}<p/>
       `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error(error);
       console.log(error);
-      res.status(500).json({
-        message:
-          "An error occurred (nodemailer), we are unable to register you. Kindly try again. Thank you.",
+      res.status(501).json({
+        message: `An error occurred.  You were successfully registered but we were unable to record your registration. 
+          Kindly send your registration details to an Admin for capturing (this is to prevent losing your data).
+          Your details are: Account name: ${accountDetails.account_name}, Account number: ${accountDetails.account_number}
+          Thank you.`,
       });
     } else {
       console.log("Email sent: " + info.response);
       res.status(200).json({
-        message: "You have been successfully registered. Welcome aboard!",
+        message: {
+          customer: name,
+          accountName: accountDetails.account_name,
+          accountNo: accountDetails.account_number,
+          regStatus: "successful",
+        },
       });
     }
   });
