@@ -2,6 +2,7 @@ const connectDB = require("../database/main.database");
 const ORM = require("../database/CharlieDB");
 
 const addTransactionToDB = (payload, res) => {
+  console.log("step 2")
   const { accountNumber, settlementId, tranDateTime, transactionAmount } =
     payload;
   console.log(accountNumber, settlementId, tranDateTime, transactionAmount);
@@ -15,6 +16,7 @@ const addTransactionToDB = (payload, res) => {
     sql,
     [accountNumber, settlementId, tranDateTime, transactionAmount],
     (err, result) => {
+       console.log(result)
       try {
         if (err) {
           res.json({
