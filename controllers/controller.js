@@ -54,7 +54,7 @@ const webhookHandler = async (req, res) => {
   }
 
   // check if acct exists in DB
-  const accountExists = await findAccountNumber(payload.accountNumber);
+  const accountExists = await findAccountNumber(payload.accountNumber, res);
   if (!accountExists) {
     res.json({
       requestSuccessful: true,
@@ -66,7 +66,7 @@ const webhookHandler = async (req, res) => {
   }
 
   // check if settlementID already exists
-  const settlementIDexists = await vetSettlementID(payload.settlementId, res);
+   const settlementIDexists = await vetSettlementID(payload.settlementId);
   if (settlementIDexists) {
     res.json({
       requestSuccessful: true,
@@ -78,7 +78,7 @@ const webhookHandler = async (req, res) => {
   } else {
     addTransactionToDB(payload);
   }
-
+  
   // authenticate x-auth-signature
   const xAuthSignatureHeader = req.headers["x-auth-signature"];
   if (
