@@ -1,7 +1,7 @@
 const connectDB = require("../database/main.database");
 const ORM = require("../database/CharlieDB");
 
-const vetSettlementID = async (settlementId) => {
+const vetSettlementID = async (settlementId, res) => {
   return new Promise(async (resolve, reject) => {
     try {
       var sql = ORM.select(
