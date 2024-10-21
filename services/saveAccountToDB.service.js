@@ -15,6 +15,7 @@ const saveAccountToDB = (accountDetails) => {
       } else {
         console.log("User successfully recorded.");
       }
+      console.log(result)
     }
   );
 };
