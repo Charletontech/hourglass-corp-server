@@ -76,7 +76,7 @@ const webhookHandler = async (req, res) => {
     });
     return;
   } else {
-    addTransactionToDB(payload);
+    addTransactionToDB(payload, res);
   }
   
   // authenticate x-auth-signature
