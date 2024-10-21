@@ -1,5 +1,6 @@
 require("dotenv").config();
-const createAccount = async (userData) => {
+
+const createAccount = async (userData, res) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Client-Id", process.env.CLIENT_ID);
@@ -28,7 +29,7 @@ const createAccount = async (userData) => {
     console.log(error);
     res.status(500).json({
       message:
-        "error occurred, failed to generate account number. ERCODE: (createAccount.service)",
+        "error occurred, failed to generate account number. ERLOCATION: createAccount.service",
     });
     throw new Error(
       `An error occurred while generating account number \n Error: ${error}`
