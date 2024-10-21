@@ -66,7 +66,7 @@ const webhookHandler = async (req, res) => {
   }
 
   // check if settlementID already exists
-   const settlementIDexists = await vetSettlementID(payload.settlementId);
+   const settlementIDexists = await vetSettlementID(payload.settlementId, res);
   if (settlementIDexists) {
     res.json({
       requestSuccessful: true,
