@@ -35,7 +35,7 @@ const sendMail = (formDetails, res, accountDetails) => {
     if (error) {
       console.log(error);
       res.status(501).json({
-        message: `An error occurred.  You were successfully registered but we were unable to record your registration. 
+        message: `An error occurred.  You were successfully registered but we were unable to record your registration with Admin. 
           Kindly send your registration details to an Admin for capturing (this is to prevent losing your data).
           Your details are: Account name: ${accountDetails.account_name}, Account number: ${accountDetails.account_number}
           Thank you.`,
