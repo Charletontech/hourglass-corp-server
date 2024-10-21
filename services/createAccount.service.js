@@ -4,7 +4,7 @@ const createAccount = async (userData, res) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Client-Id", process.env.CLIENT_ID);
-  myHeaders.append("X-Auth-Signature", process.env.X_SIGNATURE);
+  myHeaders.append("X-Auth-Signature", process.env.X_SIGNATURE_LIVE);
 
   var raw = JSON.stringify({
     account_name: `${userData.name}`,
