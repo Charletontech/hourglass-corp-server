@@ -19,6 +19,7 @@ const addTransactionToDB = (payload, res) => {
        console.log(result)
       try {
         if (err) {
+          console.log(err)
           res.json({
             requestSuccessful: true,
             sessionId: "99990000554443332221",
