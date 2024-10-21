@@ -1,7 +1,7 @@
 const connectDB = require("../database/main.database");
 const ORM = require("../database/CharlieDB");
 
-const addTransactionToDB = (payload) => {
+const addTransactionToDB = (payload, res) => {
   const { accountNumber, settlementId, tranDateTime, transactionAmount } =
     payload;
   console.log(accountNumber, settlementId, tranDateTime, transactionAmount);
@@ -25,7 +25,7 @@ const addTransactionToDB = (payload) => {
           });
           throw new Error("Error adding transaction details to database");
         }
-        console.log(result)
+        console.log(result);
       } catch (error) {
         console.log(error);
       }
