@@ -25,6 +25,7 @@ const addTransactionToDB = (payload) => {
           });
           throw new Error("Error adding transaction details to database");
         }
+        console.log(result)
       } catch (error) {
         console.log(error);
       }
