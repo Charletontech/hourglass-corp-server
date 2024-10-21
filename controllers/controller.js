@@ -83,7 +83,7 @@ const webhookHandler = async (req, res) => {
   const xAuthSignatureHeader = req.headers["x-auth-signature"];
   if (
     !xAuthSignatureHeader ||
-    xAuthSignatureHeader !== process.env.X_SIGNATURE_LIVE
+    xAuthSignatureHeader !== process.env.X_SIGNATURE
   ) {
     res.json({
       requestSuccessful: true,
