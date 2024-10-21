@@ -76,6 +76,7 @@ const webhookHandler = async (req, res) => {
     });
     return;
   } else {
+    console.log("reached add trans serv")
     addTransactionToDB(payload, res);
   }
   
