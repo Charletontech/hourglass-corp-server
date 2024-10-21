@@ -5,7 +5,7 @@ const connectDB = mysql.createConnection({
   host: `${process.env.HOURGLASS_HOST}`,
   user: `${process.env.HOURGLASS_USER}`,
   password: `${process.env.HOURGLASS_PASSWORD}`,
-  port: 3306,
+  port: 3307,
   database: `${process.env.HOURGLASS_DB}`,
 });
 
