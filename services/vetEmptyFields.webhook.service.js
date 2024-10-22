@@ -1,13 +1,12 @@
 const vetEmptyFields = (payload) => {
   var fieldIsEmpty = false;
 
-  for (const field in payload) {
-    if (Object.prototype.hasOwnProperty.call(payload, field)) {
-      const currentField = payload[field];
-      if (currentField === "" || currentField === null) {
-        fieldIsEmpty = true;
-      }
-    }
+  if (
+    payload.accountNumber === "" ||
+    payload.sessionId === "" ||
+    payload.settlementId === ""
+  ) {
+    fieldIsEmpty = true;
   }
 
   return fieldIsEmpty;
