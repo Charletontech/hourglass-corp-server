@@ -53,6 +53,21 @@ const webhookHandler = async (req, res) => {
     return;
   }
 
+  // authenticate x-auth-signature
+  const xAuthSignatureHeader = req.headers["x-auth-signature"];
+  if (
+    !xAuthSignatureHeader ||
+    xAuthSignatureHeader !== process.env.X_SIGNATURE
+  ) {
+    res.json({
+      requestSuccessful: true,
+      sessionId: "99990000554443332221",
+      responseMessage: "rejected transaction",
+      responseCode: "02",
+    });
+    return;
+  }
+
   // check if acct exists in DB
   const accountExists = await findAccountNumber(payload.accountNumber, res);
   if (!accountExists) {
@@ -79,20 +94,7 @@ const webhookHandler = async (req, res) => {
     addTransactionToDB(payload, res);
   }
   
-  // authenticate x-auth-signature
-  const xAuthSignatureHeader = req.headers["x-auth-signature"];
-  if (
-    !xAuthSignatureHeader ||
-    xAuthSignatureHeader !== process.env.X_SIGNATURE
-  ) {
-    res.json({
-      requestSuccessful: true,
-      sessionId: "99990000554443332221",
-      responseMessage: "rejected transaction",
-      responseCode: "02",
-    });
-    return;
-  }
+  
 
   res.json({
     requestSuccessful: true,
