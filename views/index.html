@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload</title>
+  </head>
+  <body>
+    <h1>Upload a File</h1>
+
+    <!-- File Upload Form -->
+    <form id="uploadForm">
+      <input type="file" id="fileInput" name="file" required />
+      <button type="submit">Upload</button>
+    </form>
+
+    <!-- Response Area -->
+    <p id="responseMessage"></p>
+
+    <script>
+      // Form submit event listener
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          const fileInput = document.getElementById("fileInput");
+          const file = fileInput.files[0]; // Get the selected file
+
+          if (!file) {
+            alert("Please select a file.");
+            return;
+          }
+
+          // Create a FormData object to hold the file
+          const formData = new FormData();
+          formData.append("file", file);
+
+          // Send the file to the server using fetch API
+          fetch("http://localhost:5000/api/barcode-search", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Display response from the server
+              document.getElementById("responseMessage").innerText = data.data;
+              console.log("File uploaded successfully:", data);
+            })
+            .catch((error) => {
+              console.error("Error uploading file:", error);
+              document.getElementById("responseMessage").innerText =
+                "Error uploading file";
+            });
+        });
+    </script>
+  </body>
+</html>

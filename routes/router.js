@@ -1,8 +1,17 @@
-const express = require('express')
-const router = express.Router()
-const {home} = require('../controllers/controller')
+const express = require("express");
+const router = express.Router();
+const {
+  imageSearchController,
+  barcodeSearchController,
+  voiceSearchController,
+  viewController,
+} = require("../controllers/controller");
 
-// api routes
-router.get('/api/refresher', home)
+// public routes
+router.get("/", viewController);
 
-module.exports = router
+// private routes
+router.post("/api/image-search", imageSearchController);
+router.post("/api/barcode-search", barcodeSearchController);
+router.post("/api/voice-search", voiceSearchController);
+module.exports = router;
