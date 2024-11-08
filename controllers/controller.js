@@ -1,10 +1,9 @@
-<<<<<<< HEAD
+const audioTextPrompt = require("../services/audioTextPrompt.service");
 const barcodeSearchService = require("../services/barcodeSearch.service");
-const fileUploadService = require("../services/fileUpload.service");
-const getAllProducts = require("../services/getAllProducts.service");
-const getFilteredProductsFromDB = require("../services/getFilteredProductsFromDB.service");
+const fileUploadService = require("../utils/fileUpload.utils");
+const getFilteredProductsFromDB = require("../database/getFilteredProductsFromDB.database");
 const imageSearchService = require("../services/imageSearch.service");
-const voiceSearchService = require("../services/voiceSearch.service");
+const getProductWithBarcode = require("../database/getProductWithBarcode.database");
 
 const viewController = (req, res) => {
   const path = require("path");
@@ -17,23 +16,20 @@ const imageSearchController = async (req, res) => {
     const imagePath = await fileUploadService(req);
     if (imagePath) {
       var searchResult = await imageSearchService(res, imagePath);
-
-      if (searchResult.startsWith("no match")) {
-        console.log("No matching product data found.");
-        res.status(501).json({ data: "No matching product data found" });
-        return;
+      if (searchResult.startsWith("[") && searchResult.endsWith("]")) {
+        var formatted = searchResult.slice(1, searchResult.length - 2);
+        const finalResult = await getFilteredProductsFromDB(formatted);
+        console.log(finalResult);
+        res.status(200).json({ data: finalResult });
       } else if (searchResult === null) {
         res.status(501).json({
           data: "error ocurred when detecting image / when getting fetching all products from database.",
         });
         return;
       } else {
-        //     searchResult = JSON.parse(searchResult);
-        var formatted = searchResult.slice(1, searchResult.length - 2);
-        console.log(formatted);
-        const finalResult = await getFilteredProductsFromDB(formatted);
-        console.log(finalResult);
-        res.status(200).json({ data: finalResult });
+        console.log("No matching product data found.");
+        res.status(501).json({ data: "No matching product data found" });
+        return;
       }
     } else {
       throw new Error("Image File upload error");
@@ -42,37 +38,28 @@ const imageSearchController = async (req, res) => {
     res.status(501).json({ data: error });
     console.log(error);
   }
-
-  // try {
-  //   const imagePath = await fileUploadService(req);
-  //   if (imagePath) {
-  //     var searchResult = await imageSearchService(res, imagePath);
-  //     searchResult = JSON.parse(searchResult);
-  //     if (searchResult.length !== 0) {
-  //       res.status(200).json({ data: searchResult });
-  //     } else {
-  //       throw new Error("Empty response");
-  //     }
-  //   } else {
-  //     throw new Error("Image File upload error");
-  //   }
-  // } catch (error) {
-  //   res.status(501).json({ data: error });
-  //   console.log(error);
-  // }
 };
 
 const barcodeSearchController = async (req, res) => {
   const imagePath = await fileUploadService(req);
   if (imagePath) {
     barcodeSearchService(imagePath)
-      .then((barcode) => {
+      .then(async (barcode) => {
         if (barcode) {
-          console.log("Barcode detected:", barcode);
-          res.status(200).json({ data: barcode });
+          const products = await getProductWithBarcode(barcode);
+          if (products === null) {
+            console.log("product not found");
+            res.status(200).json({
+              data: "No matching product with the specified barcode exists",
+              response: "not found",
+            });
+          } else {
+            console.log("Products found", products);
+            res.status(200).json({ data: products, response: "found" });
+          }
         } else {
           console.log("No barcode detected in the image");
-          res.status(501).json({ data: "No barcode found" });
+          res.status(501).json({ data: "No barcode detected in the image" });
         }
       })
       .catch((error) => {
@@ -86,7 +73,33 @@ const barcodeSearchController = async (req, res) => {
 
 const voiceSearchController = async (req, res) => {
   const filePath = await fileUploadService(req);
-  voiceSearchService(res, filePath);
+  if (filePath) {
+    try {
+      var arrayOfProductId = await audioTextPrompt(filePath);
+      if (!arrayOfProductId) {
+        throw new Error(
+          "Server Failed to generate search results OR failed to get all products"
+        );
+      }
+
+      if (arrayOfProductId.startsWith("null")) {
+        console.log("No matching product data  in product database.");
+        throw new Error("No matching product data found in product database");
+      } else {
+        var formatted = arrayOfProductId.slice(1, arrayOfProductId.length - 2);
+        const finalResult = await getFilteredProductsFromDB(formatted);
+        console.log(finalResult.length);
+        res.status(200).json({ data: finalResult });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(501).json({
+        data: error,
+      });
+    }
+  } else {
+    res.status(501).json({ data: "Error uploading file..." });
+  }
 };
 
 module.exports = {
@@ -95,27 +108,3 @@ module.exports = {
   voiceSearchController,
   viewController,
 };
-=======
-const axios = require('axios')
-const home = async  (req, res) => {
-    // if (!req.headers['authorization']) {
-    //     res.json({message:"access denied"})
-    //     return
-    // } else {
-    //     req.headers['authorization'] === process.env.TOKEN ? 
-    //     refreshServer() :
-    //     res.json({message: "wrong token provided"})
-    // }
-     refreshServer()
-    function refreshServer() {
-        res.json({message:"BOT still running"})
-        setInterval( async () => {
-            var res = await axios.get('https://phoenixdigitalcrest.org/refresh')
-            // console.log(res.data)
-        },60 * 14 * 1000)
-    }
-   
-}
-
-module.exports = {home}
->>>>>>> 62c351ed93554cdbc3cdaccf03ecac88e516d34b

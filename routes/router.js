@@ -5,6 +5,7 @@ const {
   barcodeSearchController,
   voiceSearchController,
   viewController,
+  fuzz,
 } = require("../controllers/controller");
 
 // public routes

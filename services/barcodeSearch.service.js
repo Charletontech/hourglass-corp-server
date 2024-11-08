@@ -11,7 +11,8 @@ const barcodeSearchService = async (imagePath) => {
           size: 800,
         },
         decoder: {
-          readers: ["code_128_reader", "ean_reader", "ean_8_reader"], // barcode types to decode
+          readers: ["code_128_reader", "ean_reader", "ean_8_reader"],
+          locate: true,
         },
       },
       function (result) {
@@ -33,7 +34,7 @@ function deleteFile(filePath) {
     if (err) {
       console.error("Error deleting file:", err);
     } else {
-      console.log("File deleted:", filePath);
+      // console.log("File deleted:", filePath);
     }
   });
 }
