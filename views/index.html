@@ -37,7 +37,7 @@
           formData.append("file", file);
 
           // Send the file to the server using fetch API
-          fetch("http://localhost:5000/api/voice-search", {
+          fetch("https://bloomzon-search-engine-v2.onrender.com/api/voice-search", {
             method: "POST",
             body: formData,
           })
