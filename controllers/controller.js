@@ -1,8 +1,9 @@
 const audioTextPrompt = require("../services/audioTextPrompt.service");
 const barcodeSearchService = require("../services/barcodeSearch.service");
+const barcodeSearchWithImageService = require("../services/barcodeSearchWithImage.service");
+const imageSearchService = require("../services/imageSearch.service");
 const fileUploadService = require("../utils/fileUpload.utils");
 const getFilteredProductsFromDB = require("../database/getFilteredProductsFromDB.database");
-const imageSearchService = require("../services/imageSearch.service");
 const getProductWithBarcode = require("../database/getProductWithBarcode.database");
 
 const viewController = (req, res) => {
@@ -28,7 +29,7 @@ const imageSearchController = async (req, res) => {
         return;
       } else {
         console.log("No matching product data found.");
-        res.status(501).json({ data: "No matching product data found" });
+        res.status(201).json({ data: "No matching product data found" });
         return;
       }
     } else {
@@ -36,26 +37,49 @@ const imageSearchController = async (req, res) => {
     }
   } catch (error) {
     res.status(501).json({ data: error });
-    console.log(error);
+    console.log(error.message);
   }
 };
 
 const barcodeSearchController = async (req, res) => {
+  try {
+    const barcode = req.body.barcode;
+    console.log(barcode);
+    if (barcode) {
+      let products = await barcodeSearchService(barcode);
+      if (products === null) {
+        console.log("product not found");
+        res.status(201).json({
+          data: "No matching product with the specified barcode exists",
+        });
+      } else {
+        console.log("Products found");
+        res.status(200).json({ data: products });
+      }
+    } else {
+      throw new Error("Barcode is missing in request body");
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(501).json({ data: error });
+  }
+};
+
+const barcodeSearchWithImageController = async (req, res) => {
   const imagePath = await fileUploadService(req);
   if (imagePath) {
-    barcodeSearchService(imagePath)
+    barcodeSearchWithImageService(imagePath)
       .then(async (barcode) => {
         if (barcode) {
           const products = await getProductWithBarcode(barcode);
           if (products === null) {
             console.log("product not found");
-            res.status(200).json({
+            res.status(201).json({
               data: "No matching product with the specified barcode exists",
-              response: "not found",
             });
           } else {
-            console.log("Products found", products);
-            res.status(200).json({ data: products, response: "found" });
+            console.log("Products found");
+            res.status(200).json({ data: products });
           }
         } else {
           console.log("No barcode detected in the image");
@@ -63,11 +87,11 @@ const barcodeSearchController = async (req, res) => {
         }
       })
       .catch((error) => {
-        res.status(501).json({ message: "error detecting barcode" });
-        console.error("Error decoding barcode:", error);
+        res.status(501).json({ data: "error detecting barcode" });
+        console.error("Error decoding barcode:", error.message);
       });
   } else {
-    return res.status(500).send("Error parsing the file upload");
+    return res.status(501).json({ data: "Error parsing the file upload" });
   }
 };
 
@@ -84,7 +108,8 @@ const voiceSearchController = async (req, res) => {
 
       if (arrayOfProductId.startsWith("null")) {
         console.log("No matching product data  in product database.");
-        throw new Error("No matching product data found in product database");
+        res.status(201).json({ data: "no matching product" });
+        return;
       } else {
         var formatted = arrayOfProductId.slice(1, arrayOfProductId.length - 2);
         const finalResult = await getFilteredProductsFromDB(formatted);
@@ -94,7 +119,7 @@ const voiceSearchController = async (req, res) => {
     } catch (error) {
       console.log(error);
       res.status(501).json({
-        data: error,
+        data: error.message,
       });
     }
   } else {
@@ -105,6 +130,7 @@ const voiceSearchController = async (req, res) => {
 module.exports = {
   imageSearchController,
   barcodeSearchController,
+  barcodeSearchWithImageController,
   voiceSearchController,
   viewController,
 };
