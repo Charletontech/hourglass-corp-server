@@ -2,6 +2,7 @@ const audioTextPrompt = require("../services/audioTextPrompt.service");
 const barcodeSearchService = require("../services/barcodeSearch.service");
 const barcodeSearchWithImageService = require("../services/barcodeSearchWithImage.service");
 const imageSearchService = require("../services/imageSearch.service");
+const imageSearchServiceV2 = require("../services/imageSearchV2.service");
 const fileUploadService = require("../utils/fileUpload.utils");
 const getFilteredProductsFromDB = require("../database/getFilteredProductsFromDB.database");
 const getProductWithBarcode = require("../database/getProductWithBarcode.database");
@@ -38,6 +39,32 @@ const imageSearchController = async (req, res) => {
   } catch (error) {
     res.status(501).json({ data: error });
     console.log(error.message);
+  }
+};
+
+const imageSearchControllerV2 = async (req, res) => {
+  try {
+    var arrayOfProductId = await imageSearchServiceV2(req);
+    console.log("AI prompt response: ", arrayOfProductId);
+    if (!arrayOfProductId) {
+      throw new Error(
+        "Server Failed to generate search results OR failed to get all products"
+      );
+    }
+
+    if (arrayOfProductId.startsWith("null")) {
+      console.log("No matching product data  in product database.");
+      res.status(201).json({ data: "no matching product" });
+      return;
+    } else {
+      var formatted = arrayOfProductId.slice(1, arrayOfProductId.length - 2);
+      const finalResult = await getFilteredProductsFromDB(formatted);
+      // console.log(finalResult);
+      res.status(200).json({ data: finalResult });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(501).json({ data: error.message });
   }
 };
 
@@ -129,6 +156,7 @@ const voiceSearchController = async (req, res) => {
 
 module.exports = {
   imageSearchController,
+  imageSearchControllerV2,
   barcodeSearchController,
   barcodeSearchWithImageController,
   voiceSearchController,

@@ -40,7 +40,6 @@ const audioTextPrompt = (filePath) => {
         },
       ]);
 
-      // Print the response.
       resolve(result.response.text());
       deleteFile(filePath);
     } catch (error) {
