@@ -1,8 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const getAllProducts = require("../database/getAllProducts.database");
+const deleteFile = require("../utils/deleteFile.utils");
 
-const imageSearchService = async (res, imagePath) => {
+const imageSearchService = async (imagePath) => {
   return new Promise((resolve, reject) => {
     const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -21,18 +22,23 @@ const imageSearchService = async (res, imagePath) => {
     async function run() {
       var allProducts = await getAllProducts();
       if (allProducts === null) {
-        reject(null);
-        throw new Error(
-          "an error ocurred while fetching all products from database. ERLOCATION: imageSearchPrompt.service.js"
+        reject(
+          new Error(
+            "an error ocurred while fetching all products from database. ERLOCATION: imageSearch.service.js"
+          )
         );
       }
       allProducts = JSON.stringify(allProducts);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-      // Prompt with an image
-      const prompt = `identify the single most prominent object in the image, compare it with this json dataset from an e-commerce platform database provided below. Respond with a javascript array only containing a list of ID of all products similar to what is identified as the most prominent object in the image. if none matches please response with "no match" only.
-        do not include any sentences in your response. 
-        JSON data: ${allProducts}
+      // Set model and create Prompt
+      // gemini-2.0-flash-thinking-exp-1219
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const prompt = `INSTRUCTION: identify the single most prominent object in the image attached, compare it with the json dataset from an e-commerce platform database provided below. Respond with an array only containing a list of ID of all products similar to what is identified as the most prominent object in the image. if none matches please response with "no match" only.
+        do not include any sentences in your response. Your response should look like this "[12, 8, 234, ...]" or "no match" when no match is found.
+        JSON DATASET: ${allProducts}
+        GUIDELINES FOR RESPONSE FORMAT: 
+        1. Your response should be in string format
+        2. Response should not contain any extra texts characters other than: e.g "[12, 8, 234, ...]" or "no match" when no match is found
         `;
 
       const imagePart = fileToGenerativePart(imagePath, "image/jpeg");
@@ -45,27 +51,22 @@ const imageSearchService = async (res, imagePath) => {
       // delete file after use
       deleteFile(imagePath);
 
-      console.log(generatedContent.response.text());
+      // console.log(generatedContent.response.text());
       resolve(generatedContent.response.text());
     }
 
     try {
       run();
     } catch (error) {
-      reject(null);
-      console.log(error, " ERLOCATION: imageSearch service");
+      reject(
+        new Error("Error processing image search prompt: " + error.message)
+      );
+      console.log(
+        error,
+        "Message: Error occurred while processing image search prompt.\nLOCATION: imageSearch service"
+      );
     }
   });
 };
-
-function deleteFile(filePath) {
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error("Error deleting file:", err);
-    } else {
-      console.log("File deleted:", filePath);
-    }
-  });
-}
 
 module.exports = imageSearchService;

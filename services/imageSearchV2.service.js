@@ -3,42 +3,6 @@ const FormData = require("form-data");
 const fs = require("fs");
 const getAllProducts = require("../database/getAllProducts.database");
 
-// const imageSearchV2 = (req) => {
-//   return new Promise(async (resolve, reject) => {
-//     require("dotenv").config();
-//     const fileUploadService = require("../utils/fileUpload.utils");
-
-//     const imagePath = await fileUploadService(req);
-//     if (imagePath !== null) {
-//       const formData = new FormData();
-//       formData.append("file", fs.createReadStream(imagePath));
-//       axios({
-//         method: "post",
-//         url: process.env.ML_MODEL_URL,
-//         data: formData,
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       })
-//         .then((response) => {
-//           deleteFile(imagePath);
-//           console.log("Response:", response.data);
-//           // const data = textPrompt(response);
-//           resolve(response.data);
-//         })
-//         .catch((error) => {
-//           deleteFile(imagePath);
-//           reject(null);
-//           throw new Error("Axios request error: ", error);
-//         });
-//     } else {
-//       throw new Error(
-//         "formidable error: error occurred while handling file upload"
-//       );
-//     }
-//   });
-// };
-
 const imageSearchV2 = (req) => {
   return new Promise(async (resolve, reject) => {
     require("dotenv").config();
@@ -63,7 +27,7 @@ const imageSearchV2 = (req) => {
 
           deleteFile(imagePath);
           // console.log(await textPrompt(response.data));
-          console.log(response.data);
+          // console.log(response.data);
           response?.data?.error
             ? reject(
                 new Error(
@@ -104,13 +68,13 @@ async function textPrompt(modelResponse) {
   const { GoogleGenerativeAI } = require("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_AI_KEY);
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+  // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const prompt = `
     Instruction: You are provided with a json data. The json data represents a list of products in an e-commerce website database.
           search through the json data and filter it and return an array containing only the id of products that match as much as possible this description: "${modelResponse}".
           if none matches please response with "null" only. Do not add any extra sentences in any of your response.
-          Your response should look like this "[12, 8, 234, ...]"
+          Your response should look like this "[12, 8, 234, ...]" or "null" when no match is found.
           JSON data: ${allProducts}
   `;
 
