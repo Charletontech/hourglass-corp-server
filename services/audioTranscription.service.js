@@ -4,11 +4,9 @@ const FormData = require("form-data");
 const fs = require("fs");
 const deleteFile = require("../utils/deleteFile.utils");
 
-const audioTranscriptionService = (req) => {
+const audioTranscriptionService = (filePath) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const fileUploadService = require("../utils/fileUpload.utils");
-      const filePath = await fileUploadService(req);
       try {
         const transcriptionResponse = await sendTranscriptionRequest(filePath);
         if (transcriptionResponse.success) {
@@ -23,6 +21,7 @@ const audioTranscriptionService = (req) => {
         }
         deleteFile(filePath);
       } catch (error) {
+        deleteFile(filePath);
         reject(
           new Error(
             "Error occurred during cloudfare transcription process: " +
@@ -31,6 +30,7 @@ const audioTranscriptionService = (req) => {
         );
       }
     } catch (error) {
+      deleteFile(filePath);
       reject(new Error("Error during file upload: " + error.message));
     }
   });

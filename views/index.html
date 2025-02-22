@@ -37,7 +37,7 @@
           formData.append("file", file);
 
           // Send the file to the server using fetch API
-          fetch("http://localhost:5000/api/voice-search", {
+          fetch("http://localhost:5000/api/transcribe", {
             method: "POST",
             body: formData,
           })
