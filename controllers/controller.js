@@ -10,6 +10,8 @@ const suspendedNinService = require("../services/suspendedNin.service");
 const dataModificationService = require("../services/dataModification.service");
 const getRequestHistoryService = require("../services/getRequestHistory.service");
 const editRequestStatusService = require("../services/editRequestStatus.service");
+const verifyAdminService = require("../services/verifyAdmin.service");
+
 
 const signUpHandler = async (req, res) => {
   try {
@@ -39,6 +41,17 @@ const signUpHandler = async (req, res) => {
 
 const loginHandler = async (req, res) => {
   try {
+     // Check if user is admin
+    const isAdmin = await verifyAdminService(req.body);
+    if (isAdmin) {
+      res.status(200).json({
+        message: `Welcome Admin`,
+        isAdmin: true,
+      });
+      return;
+    }
+
+    // Check if user exists
     const userData = await getUser(req.body);
     if (userData === "user not found" || userData === "incorrect password") {
       res.status(400).json({
