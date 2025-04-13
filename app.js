@@ -12,13 +12,13 @@ app.use(bodyParser.json());
 
 //enabling cors
 // app.use(cors({ origin: true }));
- app.use(
-   cors({
-     origin: "https://hourglassnig.online",
-     credentials: true,
-   })
- );
-// app.options("*", cors());
+ //app.use(
+  // cors({
+    // origin: "https://hourglassnig.online",
+     //credentials: true,
+   //})
+// );
+ app.options("*", cors());
 
 // initialize database
 // initDB();
