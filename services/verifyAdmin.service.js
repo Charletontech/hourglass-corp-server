@@ -1,13 +1,13 @@
 const verifyAdminService = async ({ password, phone }) => {
-  // if (phone) {
-  //     return new Promise((resolve, reject) => {
-  //         var sql = ORM.select("*", "users", "password", password, "phone", phone);
-  //         connectDB.query(sql, (err, result) => {
-  //             if (err) {
-  //                 reject(err);
-  //             }
-  //             resolve(result);
-  //         });
-  //     });
-  // }
+  return new Promise((resolve) => {
+    if (
+      phone === process.env.ADMIN_PHONE &&
+      password === process.env.ADMIN_PASS
+    ) {
+      resolve(true);
+    } else {
+      resolve(false);
+    }
+  });
 };
+module.exports = verifyAdminService;
