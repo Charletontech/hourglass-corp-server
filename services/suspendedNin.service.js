@@ -25,7 +25,7 @@ const suspendedNinService = async ({ phone, name, nin, service }) => {
         return;
       } else {
         // debit user
-        var sql = `UPDATE hourglass_users SET wallet = wallet - ${charge} WHERE phone = ${phone}`;
+        var sql = `UPDATE hourglass_users SET wallet = wallet - ${charge} WHERE phone = "${phone}"`;
         connectDB.query(sql, (err, result) => {
           if (err) {
             console.log(err);
