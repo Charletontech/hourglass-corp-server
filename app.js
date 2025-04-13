@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 // app.use(cors({ origin: true }));
  app.use(
    cors({
-     origin: "https:hourglassnig.online",
+     origin: "https://hourglassnig.online",
      credentials: true,
    })
  );
