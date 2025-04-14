@@ -11,7 +11,7 @@ const dataModificationService = require("../services/dataModification.service");
 const getRequestHistoryService = require("../services/getRequestHistory.service");
 const editRequestStatusService = require("../services/editRequestStatus.service");
 const verifyAdminService = require("../services/verifyAdmin.service");
-
+const updateBalanceService = require("../services/updateBalance.service");
 
 const signUpHandler = async (req, res) => {
   try {
@@ -206,6 +206,22 @@ const editRequestStatus = async (req, res) => {
   }
 };
 
+const updateBalance = async (req, res) => {
+  try {
+    var updateSuccess = await updateBalanceService(req.params);
+    if (updateSuccess) {
+      res.status(200).json({
+        message: `Successfully updated balance of ${req.params.phone} to ${req.params.newBalance}`,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Message: ${error}`,
+    });
+  }
+};
+
+
 const refreshHandler = (req, res) => {
   console.log("server has been refreshed!");
   res.json("server has been refreshed!");
@@ -224,4 +240,5 @@ module.exports = {
   dataModification,
   getRequestHistory,
   editRequestStatus,
+  updateBalance,
 };
