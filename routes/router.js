@@ -14,6 +14,7 @@ const {
   dataModification,
   getRequestHistory,
   editRequestStatus,
+  updateBalance,
 } = require("../controllers/controller");
 
 // public routes
@@ -28,6 +29,7 @@ router.post("/suspended-nin", suspendedNin);
 router.post("/data-modification", dataModification);
 router.get("/get-request-history", getRequestHistory);
 router.put("/edit-request-status/:id/:status", editRequestStatus);
+router.put("/update-balance/:phone/:newBalance", updateBalance);
 router.get("/refresh-server", refreshHandler);
 
 module.exports = router;
