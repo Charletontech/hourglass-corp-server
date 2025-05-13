@@ -1,9 +1,8 @@
 .env
-rest.http
+_test.http
 node_modules/
 .vscode/
-test/
-utils/fuse.utils.js
-model_page_json_output.txt
-database/categories.json
-database/u179857929_bloomzonR.sql
+_old-projects/
+package-lock-main.json
+package-main.json
+/uploads

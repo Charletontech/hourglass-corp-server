@@ -1,0 +1,19 @@
+GET http://localhost:5000/get-request-history
+
+###
+PUT http://localhost:5000/edit-request-status/1/declined
+
+
+###
+POST http://localhost:5000/get-request-history
+content-type: application/json
+
+{
+    "email": "test2@mail.com",
+    "firstname": "Johnny",
+    "lastname": "Doe",
+    "password": "12345678",
+    "role": "user",
+    "referredBy": "jamie",
+    "phone": "09000000000"
+  }

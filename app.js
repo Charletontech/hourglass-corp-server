@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const router = require("./routes/router");
+const initDB = require("./database/initDB");
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -10,13 +11,17 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 //enabling cors
-app.use(
-  cors({
-    origin: "http://127.0.0.1:5500",
-    credentials: true,
-  })
-);
-app.options("*", cors());
+app.use(cors({ origin: '*' }));
+// app.use(
+   //cors({
+     //origin: "https://hourglassnig.online",
+    // credentials: true,
+   //})
+ //);
+ app.options("*", cors());
+
+// initialize database
+// initDB();
 
 app.use("/", router);
 

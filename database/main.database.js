@@ -2,11 +2,12 @@ const mysql = require("mysql");
 require("dotenv").config();
 
 const connectDB = mysql.createPool({
-  host: process.env.BLOOMZON_HOST,
-  user: process.env.BLOOMZON_USER,
-  password: process.env.BLOOMZON_PASS,
-  port: 3306,
-  database: process.env.BLOOMZON_DB,
+  connectionLimit: 4,
+  host: `${process.env.HOURGLASS_HOST}`,
+  user: `${process.env.HOURGLASS_USER}`,
+  password: `${process.env.HOURGLASS_PASSWORD}`,
+  port: process.env.DB_PORT || 3307,
+  database: `${process.env.HOURGLASS_DB}`,
 });
 
 module.exports = connectDB;
