@@ -1,5 +1,6 @@
 const ORM = require("../database/CharlieDB");
 const connectDB = require("../database/main.database");
+const delay = require("../utils/delay");
 
 const userRequestHistoryService = async ({ user }) => {
   return new Promise((resolve, reject) => {
@@ -10,6 +11,7 @@ const userRequestHistoryService = async ({ user }) => {
       }
       resolve(result);
     });
+    delay(3000);
   });
 };
 module.exports = userRequestHistoryService;

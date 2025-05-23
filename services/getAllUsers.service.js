@@ -1,6 +1,6 @@
 const ORM = require("../database/CharlieDB");
 const connectDB = require("../database/main.database");
-
+const delay = require("../utils/delay");
 const getAllUsersService = async (req, res) => {
   try {
     return new Promise((resolve, reject) => {
@@ -13,7 +13,7 @@ const getAllUsersService = async (req, res) => {
           resolve(result);
         }
       });
-      delay(500);
+      delay(3000);
     });
   } catch (error) {
     console.log(error);

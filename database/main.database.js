@@ -11,7 +11,7 @@ const connectDB = mysql.createPool({
   waitForConnections: true,
   queueLimit: 0,
   acquireTimeout: 3000, // Avoid long waits for free connections
-  timeout: 10000, // Force idle connections to close sooner
+  timeout: 4000, // Force idle connections to close sooner
 });
 
 module.exports = connectDB;
