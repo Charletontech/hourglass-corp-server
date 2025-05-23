@@ -17,6 +17,7 @@ const {
   userRequestHistory,
   ninDemographic,
   sharedNinFile,
+  getAllUsers,
 } = require("../controllers/controller");
 const upload = require("../utils/multerFileUpload");
 
@@ -36,6 +37,7 @@ router.put("/update-balance/:phone/:newBalance", updateBalance);
 router.get("/user-request-history", userRequestHistory);
 router.post("/nin-demographic-search", ninDemographic);
 router.post("/shared-nin-file", sharedNinFile);
+router.get("/get-all-users", getAllUsers);
 router.get("/refresh-server", refreshHandler);
 
 module.exports = router;

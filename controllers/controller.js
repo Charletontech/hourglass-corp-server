@@ -15,6 +15,7 @@ const updateBalanceService = require("../services/updateBalance.service");
 const userRequestHistoryService = require("../services/userRequestHistory.service");
 const ninDemographicService = require("../services/ninDemographic.service");
 const sharedNinFileService = require("../services/sharedNinFile.service");
+const getAllUsersService = require("../services/getAllUsers.service");
 
 const signUpHandler = async (req, res) => {
   try {
@@ -273,6 +274,21 @@ const sharedNinFile = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    var responseText = await getAllUsersService(req.body);
+    if (responseText) {
+      res.status(200).json({
+        message: responseText,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Message: ${error}`,
+    });
+  }
+};
+
 const refreshHandler = (req, res) => {
   console.log("server has been refreshed!");
   res.json("server has been refreshed!");
@@ -295,4 +311,5 @@ module.exports = {
   userRequestHistory,
   ninDemographic,
   sharedNinFile,
+  getAllUsers,
 };
