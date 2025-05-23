@@ -2,7 +2,7 @@ const ORM = require("../database/CharlieDB");
 const connectDB = require("../database/main.database");
 const sendMail = require("../utils/sendMail.util");
 
-const sharedNinFileService = async ({ service, phone, name }) => {
+const sharedNinFileService = async ({ service, phone, name, category }) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Set charge amount
@@ -20,22 +20,22 @@ const sharedNinFileService = async ({ service, phone, name }) => {
           }
         });
       });
-      // Check if user has enough balance
-      if (charge > userBalance) {
-        reject(
-          "Insufficient balance for this service. Please fund your wallet."
-        );
-        return;
-      }
+      //   // Check if user has enough balance
+      //   if (charge > userBalance) {
+      //     reject(
+      //       "Insufficient balance for this service. Please fund your wallet."
+      //     );
+      //     return;
+      //   }
 
-      // Debit user
-      const debitSql = `UPDATE hourglass_users SET wallet = wallet - ${charge} WHERE phone = "${phone}"`;
-      connectDB.query(debitSql, (err) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-        }
-      });
+      //   // Debit user
+      //   const debitSql = `UPDATE hourglass_users SET wallet = wallet - ${charge} WHERE phone = "${phone}"`;
+      //   connectDB.query(debitSql, (err) => {
+      //     if (err) {
+      //       console.log(err);
+      //       reject(err);
+      //     }
+      //   });
 
       // save request data to database
       const saveNewRequest = await new Promise((resolve) => {
@@ -43,8 +43,9 @@ const sharedNinFileService = async ({ service, phone, name }) => {
           "name",
           "phone",
           "service",
+          "category",
         ]);
-        connectDB.query(sql, [name, phone, service], (err) => {
+        connectDB.query(sql, [name, phone, service, category], (err) => {
           if (err) {
             reject(err);
           } else {
@@ -61,6 +62,7 @@ const sharedNinFileService = async ({ service, phone, name }) => {
       //   send mail notification to admin
       const mailSent = await sendMail(service, {
         serviceRequested: service,
+        category: category,
         requestedBy: name,
         agentPhoneNumber: phone,
       });
