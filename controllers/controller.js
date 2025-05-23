@@ -13,6 +13,8 @@ const editRequestStatusService = require("../services/editRequestStatus.service"
 const verifyAdminService = require("../services/verifyAdmin.service");
 const updateBalanceService = require("../services/updateBalance.service");
 const userRequestHistoryService = require("../services/userRequestHistory.service");
+const ninDemographicService = require("../services/ninDemographic.service");
+const sharedNinFileService = require("../services/sharedNinFile.service");
 
 const signUpHandler = async (req, res) => {
   try {
@@ -241,6 +243,36 @@ const userRequestHistory = async (req, res) => {
   }
 };
 
+const ninDemographic = async (req, res) => {
+  try {
+    var responseText = await ninDemographicService(req.body);
+    if (responseText) {
+      res.status(200).json({
+        message: responseText,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Message: ${error}`,
+    });
+  }
+};
+
+const sharedNinFile = async (req, res) => {
+  try {
+    var responseText = await sharedNinFileService(req.body);
+    if (responseText) {
+      res.status(200).json({
+        message: responseText,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: `Message: ${error}`,
+    });
+  }
+};
+
 const refreshHandler = (req, res) => {
   console.log("server has been refreshed!");
   res.json("server has been refreshed!");
@@ -261,4 +293,6 @@ module.exports = {
   editRequestStatus,
   updateBalance,
   userRequestHistory,
+  ninDemographic,
+  sharedNinFile,
 };
