@@ -21,14 +21,21 @@ const ninValidationService = async ({
 
       // check user balance
       const userBalance = await new Promise((resolve, reject) => {
-        var sql = ORM.select("wallet", "hourglass_users", "phone", phone);
-        connectDB.query(sql, (err, result) => {
+        connectDB.getConnection((err, connection) => {
           if (err) {
-            console.log(err);
             reject(err);
-          } else {
-            resolve(result[0].wallet);
+            return;
           }
+          var sql = ORM.select("wallet", "hourglass_users", "phone", phone);
+          connectDB.query(sql, (err, result) => {
+            connection.release();
+            if (err) {
+              console.log(err);
+              reject(err);
+            } else {
+              resolve(result[0].wallet);
+            }
+          });
         });
       });
       if (charge > userBalance) {
@@ -48,22 +55,29 @@ const ninValidationService = async ({
       }
 
       // store request data in database
-      var sql = ORM.insert("hourglass_request_list", [
-        "name",
-        "phone",
-        "service",
-        "category",
-      ]);
-      connectDB.query(
-        sql,
-        [user, phone, service, ninValidationType],
-        (err, result) => {
-          if (err) {
-            console.log(err);
-            reject(err);
-          }
+      connectDB.getConnection((err, connection) => {
+        if (err) {
+          reject(err);
+          return;
         }
-      );
+        var sql = ORM.insert("hourglass_request_list", [
+          "name",
+          "phone",
+          "service",
+          "category",
+        ]);
+        connectDB.query(
+          sql,
+          [user, phone, service, ninValidationType],
+          (err, result) => {
+            connection.release();
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+          }
+        );
+      });
 
       const mailSent = await sendMail(service, {
         ninValidationType,

@@ -3,14 +3,21 @@ const connectDB = require("../database/main.database");
 
 const creditUser = async ({ fundAmount, phone }) => {
   return new Promise((resolve, reject) => {
-    var sql = `UPDATE hourglass_users SET wallet = wallet + ${fundAmount} WHERE phone = "${phone}"`;
-    connectDB.query(sql, (err, result) => {
+    connectDB.getConnection((err, connection) => {
       if (err) {
-        console.log(err);
         reject(err);
-      } else {
-        resolve(true);
+        return;
       }
+      var sql = `UPDATE hourglass_users SET wallet = wallet + ${fundAmount} WHERE phone = "${phone}"`;
+      connectDB.query(sql, (err, result) => {
+        connection.release();
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      });
     });
   });
 };

@@ -69,7 +69,7 @@ const loginHandler = async (req, res) => {
       message: `${JSON.stringify(userData[0])}`,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).json({
       message: `Error: ${error}`,
     });
@@ -103,6 +103,7 @@ const verifyPayment = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Error: ${error}`,
     });
@@ -116,6 +117,7 @@ const getAccess = (req, res) => {
       message: access,
     });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Error: ${error}`,
     });
@@ -129,6 +131,7 @@ const getBalance = async (req, res) => {
       message: balance,
     });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Error: ${error}`,
     });
@@ -144,6 +147,7 @@ const ninValidation = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Error: ${error}`,
     });
@@ -159,6 +163,7 @@ const suspendedNin = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -178,6 +183,7 @@ const dataModification = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error.message || error}`,
     });
@@ -193,6 +199,7 @@ const getRequestHistory = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -208,6 +215,7 @@ const editRequestStatus = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -223,6 +231,7 @@ const updateBalance = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -238,6 +247,7 @@ const userRequestHistory = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -253,6 +263,7 @@ const ninDemographic = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -268,6 +279,7 @@ const sharedNinFile = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -283,6 +295,7 @@ const getAllUsers = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       message: `Message: ${error}`,
     });
@@ -290,6 +303,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const refreshHandler = (req, res) => {
+  fetch("https://server-refresher-bot.onrender.com/api/refresher");
   console.log("server has been refreshed!");
   res.json("server has been refreshed!");
 };

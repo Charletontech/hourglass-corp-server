@@ -5,17 +5,24 @@ const connectDB = require("../database/main.database");
 const getUser = async ({ password, phone }) => {
   return new Promise(async (resolve, reject) => {
     var sql = ORM.select("*", "hourglass_users", "phone", phone);
-    connectDB.query(sql, async (err, result) => {
+    connectDB.getConnection((err, connection) => {
       if (err) {
-        console.log(err);
         reject(err);
+        return;
       }
-      if (!result || result.length === 0) {
-        resolve("user not found");
-      } else {
-        const passwordCorrect = await checkPassword(result[0].password);
-        passwordCorrect ? resolve(result) : resolve("incorrect password");
-      }
+      connectDB.query(sql, async (err, result) => {
+        connection.release();
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+        if (!result || result.length === 0) {
+          resolve("user not found");
+        } else {
+          const passwordCorrect = await checkPassword(result[0].password);
+          passwordCorrect ? resolve(result) : resolve("incorrect password");
+        }
+      });
     });
   });
 

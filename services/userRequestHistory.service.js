@@ -4,14 +4,21 @@ const delay = require("../utils/delay");
 
 const userRequestHistoryService = async ({ user }) => {
   return new Promise((resolve, reject) => {
-    var sql = ORM.select("*", "hourglass_request_list", "phone", user);
-    connectDB.query(sql, (err, result) => {
+    connectDB.getConnection((err, connection) => {
       if (err) {
         reject(err);
+        return;
       }
-      resolve(result);
+
+      var sql = ORM.select("*", "hourglass_request_list", "phone", user);
+      connection.query(sql, (err, result) => {
+        connection.release();
+        if (err) {
+          reject(err);
+        }
+        resolve(result);
+      });
     });
-    delay(3000);
   });
 };
 module.exports = userRequestHistoryService;

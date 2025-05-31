@@ -3,12 +3,19 @@ const connectDB = require("../database/main.database");
 
 const getRequestHistoryService = async () => {
   return new Promise((resolve, reject) => {
-    var sql = ORM.select("*", "hourglass_request_list");
-    connectDB.query(sql, (err, result) => {
+    connectDB.getConnection((err, connection) => {
       if (err) {
         reject(err);
+        return;
       }
-      resolve(result);
+      var sql = ORM.select("*", "hourglass_request_list");
+      connectDB.query(sql, (err, result) => {
+        connection.release();
+        if (err) {
+          reject(err);
+        }
+        resolve(result);
+      });
     });
   });
 };

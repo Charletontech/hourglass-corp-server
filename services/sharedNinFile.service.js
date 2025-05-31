@@ -11,31 +11,38 @@ const sharedNinFileService = async ({ service, phone, name, category }) => {
       // Check user balance
       const userBalance = await new Promise((resolve) => {
         const sql = ORM.select("wallet", "hourglass_users", "phone", phone);
-        connectDB.query(sql, (err, result) => {
+        connectDB.getConnection((err, connection) => {
           if (err) {
-            console.log(err);
             reject(err);
-          } else {
-            resolve(result[0].wallet);
+            return;
           }
+          connectDB.query(sql, (err, result) => {
+            connection.release();
+            if (err) {
+              console.log(err);
+              reject(err);
+            } else {
+              resolve(result[0].wallet);
+            }
+          });
         });
       });
-      //   // Check if user has enough balance
-      //   if (charge > userBalance) {
-      //     reject(
-      //       "Insufficient balance for this service. Please fund your wallet."
-      //     );
-      //     return;
-      //   }
+      // Check if user has enough balance
+      if (charge > userBalance) {
+        reject(
+          "Insufficient balance for this service. Please fund your wallet."
+        );
+        return;
+      }
 
-      //   // Debit user
-      //   const debitSql = `UPDATE hourglass_users SET wallet = wallet - ${charge} WHERE phone = "${phone}"`;
-      //   connectDB.query(debitSql, (err) => {
-      //     if (err) {
-      //       console.log(err);
-      //       reject(err);
-      //     }
-      //   });
+      // Debit user
+      const debitSql = `UPDATE hourglass_users SET wallet = wallet - ${charge} WHERE phone = "${phone}"`;
+      connectDB.query(debitSql, (err) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+      });
 
       // save request data to database
       const saveNewRequest = await new Promise((resolve) => {

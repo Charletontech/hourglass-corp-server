@@ -10,17 +10,24 @@ const updateBalanceService = async ({ phone, newBalance }) => {
       "phone",
       phone
     );
-    connectDB.query(sql, [newBalance, phone], (error, results) => {
-      if (error) {
-        console.error("Error updating balance:", error);
-        return reject(error);
+    connectDB.getConnection((err, connection) => {
+      if (err) {
+        reject(err);
+        return;
       }
-      if (results.affectedRows === 0) {
-        return reject(
-          new Error("No rows updated. Check if the phone number exists.")
-        );
-      }
-      resolve(results);
+      connectDB.query(sql, [newBalance, phone], (error, results) => {
+        connection.release();
+        if (error) {
+          console.error("Error updating balance:", error);
+          return reject(error);
+        }
+        if (results.affectedRows === 0) {
+          return reject(
+            new Error("No rows updated. Check if the phone number exists.")
+          );
+        }
+        resolve(results);
+      });
     });
   });
 };

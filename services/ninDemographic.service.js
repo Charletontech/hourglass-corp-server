@@ -54,12 +54,19 @@ const ninDemographicService = async ({
           "phone",
           "service",
         ]);
-        connectDB.query(sql, [name, phone, service], (err) => {
+        connectDB.getConnection((err, connection) => {
           if (err) {
             reject(err);
-          } else {
-            resolve(true);
+            return;
           }
+          connectDB.query(sql, [name, phone, service], (err) => {
+            connection.release();
+            if (err) {
+              reject(err);
+            } else {
+              resolve(true);
+            }
+          });
         });
       });
 

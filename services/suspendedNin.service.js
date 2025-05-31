@@ -8,13 +8,20 @@ const suspendedNinService = async ({ phone, name, nin, service }) => {
       // check user balance
       const userBalance = await new Promise((resolve, reject) => {
         var sql = ORM.select("wallet", "hourglass_users", "phone", phone);
-        connectDB.query(sql, (err, result) => {
+        connectDB.getConnection((err, connection) => {
           if (err) {
-            console.log(err);
             reject(err);
-          } else {
-            resolve(result[0].wallet);
+            return;
           }
+          connectDB.query(sql, (err, result) => {
+            connection.release();
+            if (err) {
+              console.log(err);
+              reject(err);
+            } else {
+              resolve(result[0].wallet);
+            }
+          });
         });
       });
       var charge = 5000;

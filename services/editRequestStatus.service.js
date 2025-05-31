@@ -3,12 +3,25 @@ const connectDB = require("../database/main.database");
 
 const editRequestStatusService = async ({ id, status }) => {
   return new Promise((resolve, reject) => {
-    var sql = ORM.update("hourglass_request_list", "status", status, "id", id);
-    connectDB.query(sql, (err, res) => {
+    connectDB.getConnection((err, connection) => {
       if (err) {
         reject(err);
+        return;
       }
-      resolve(true);
+      var sql = ORM.update(
+        "hourglass_request_list",
+        "status",
+        status,
+        "id",
+        id
+      );
+      connectDB.query(sql, (err, res) => {
+        connection.release();
+        if (err) {
+          reject(err);
+        }
+        resolve(true);
+      });
     });
   });
 };
